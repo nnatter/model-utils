@@ -1,0 +1,12 @@
+{
+    "name": "handcraftedinthealps/model-utils",
+    "description": "Utilities for sulu projects or bundles.",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "ModelUtils",
+            "homepage": "https://github.com/handcraftedinthealps/model-utils/graphs/contributors"
+        }
+    ]
+}
