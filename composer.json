@@ -8,5 +8,8 @@
             "name": "ModelUtils",
             "homepage": "https://github.com/handcraftedinthealps/model-utils/graphs/contributors"
         }
-    ]
+    ],
+    "require": {
+        "php": "^7.2"
+    }
 }
