@@ -4,3 +4,8 @@ composer.lock
 
 # ide
 .idea
+
+# tests and linting
+.php_cs.cache
+var
+coverage-report
