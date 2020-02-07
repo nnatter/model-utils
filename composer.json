@@ -11,7 +11,9 @@
     ],
     "require": {
         "php": "^7.2",
-        "sulu/sulu": "^2.0"
+        "sulu/sulu": "^2.0",
+        "doctrine/orm": "^2.7",
+        "doctrine/collections": "^1.6"
     },
     "require-dev": {
         "jackalope/jackalope-doctrine-dbal": "^1.4",
