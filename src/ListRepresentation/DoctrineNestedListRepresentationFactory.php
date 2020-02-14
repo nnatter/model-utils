@@ -183,6 +183,6 @@ class DoctrineNestedListRepresentationFactory
             unset($row['parentId']);
         }
 
-        return $rowsByParentId[$parentId];
+        return $rowsByParentId[$parentId] ?? [];
     }
 }
