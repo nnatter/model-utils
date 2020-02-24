@@ -2,10 +2,20 @@
 
 declare(strict_types=1);
 
-namespace HandcraftedInTheAlps\Util\Model\ListRepresentation;
+/*
+ * This file is part of Sulu.
+ *
+ * (c) Sulu GmbH
+ *
+ * This source file is subject to the MIT license that is bundled
+ * with this source code in the file LICENSE.
+ */
+
+namespace Sulu\Bundle\DirectoryBundle\Common\ListRepresentation;
 
 use Sulu\Component\Rest\ListBuilder\Doctrine\DoctrineListBuilderFactory;
 use Sulu\Component\Rest\ListBuilder\Doctrine\FieldDescriptor\DoctrineFieldDescriptor;
+use Sulu\Component\Rest\ListBuilder\ListRestHelperInterface;
 use Sulu\Component\Rest\ListBuilder\Metadata\FieldDescriptorFactoryInterface;
 use Sulu\Component\Rest\ListBuilder\PaginatedRepresentation;
 use Sulu\Component\Rest\RestHelperInterface;
@@ -16,6 +26,11 @@ class DoctrineListRepresentationFactory
      * @var RestHelperInterface
      */
     private $restHelper;
+
+    /**
+     * @var ListRestHelperInterface
+     */
+    private $listRestHelper;
 
     /**
      * @var DoctrineListBuilderFactory
@@ -29,10 +44,12 @@ class DoctrineListRepresentationFactory
 
     public function __construct(
         RestHelperInterface $restHelper,
+        ListRestHelperInterface $listRestHelper,
         DoctrineListBuilderFactory $listBuilderFactory,
         FieldDescriptorFactoryInterface $fieldDescriptorFactory
     ) {
         $this->restHelper = $restHelper;
+        $this->listRestHelper = $listRestHelper;
         $this->listBuilderFactory = $listBuilderFactory;
         $this->fieldDescriptorFactory = $fieldDescriptorFactory;
     }
@@ -60,10 +77,21 @@ class DoctrineListRepresentationFactory
             $listBuilder->where($fieldDescriptors[$key], $value);
         }
 
-        $list = $listBuilder->execute();
+        $items = $listBuilder->execute();
+
+        // sort the items to reflect the order of the given ids if the list was requested to include specific ids
+        $requestedIds = $this->listRestHelper->getIds();
+        if (null !== $requestedIds) {
+            usort($items, static function ($item1, $item2) use ($requestedIds) {
+                $item1Position = array_search($item1['id'], $requestedIds, true);
+                $item2Position = array_search($item2['id'], $requestedIds, true);
+
+                return $item1Position - $item2Position;
+            });
+        }
 
         return new PaginatedRepresentation(
-            $list,
+            $items,
             $resourceKey,
             (int) $listBuilder->getCurrentPage(),
             (int) $listBuilder->getLimit(),
